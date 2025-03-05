@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steuer-Wunderglück Slot-Maschine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>💰 Steuer-Wunderglück Slot-Maschine 💰</h1>
+    <p>Ziehe den Hebel und erfahre deine Steuererstattung!</p>
+
+    <div class="slot-machine">
+        <div class="slot" id="slot1">💰</div>
+        <div class="slot" id="slot2">💵</div>
+        <div class="slot" id="slot3">📜</div>
+    </div>
+
+    <button onclick="spin()">🎰 Jetzt drehen!</button>
+
+    <p id="result"></p>
+
+    <h2>📜 Letzte "Steuererstattungen"</h2>
+    <ul id="fake-payouts">
+        <li>🤑 Peter M. hat 1.234 € zurückbekommen!</li>
+        <li>😱 Lisa S. muss 4.567 € nachzahlen!</li>
+        <li>🎉 Kevin D. ist jetzt offiziell steuerfrei!</li>
+    </ul>
+
+    <script>
+        function spin() {
+            let spinSound = new Audio("sounds/spin.mp3");
+            let winSound = new Audio("sounds/win.mp3");
+            let loseSound = new Audio("sounds/lose.mp3");
+            
+            spinSound.play();
+
+            let symbols = ["💰", "💵", "📜", "🤑", "💳", "🏦", "⚖️"];
+            let slot1 = document.getElementById("slot1");
+            let slot2 = document.getElementById("slot2");
+            let slot3 = document.getElementById("slot3");
+
+            // Dreh-Animation starten
+            slot1.classList.add("spin-effect");
+            slot2.classList.add("spin-effect");
+            slot3.classList.add("spin-effect");
+
+            setTimeout(() => {
+                // Zufällige Symbole setzen
+                slot1.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                slot2.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                slot3.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+
+                // Animation entfernen
+                slot1.classList.remove("spin-effect");
+                slot2.classList.remove("spin-effect");
+                slot3.classList.remove("spin-effect");
+
+                // Zufällige Steuererstattung berechnen (-2500 bis +2500 €)
+                let amount = (Math.random() * 5000 - 2500).toFixed(2);
+                let message = amount >= 0 
+                    ? `🎉 Glückwunsch! Du bekommst ${amount} € Steuererstattung!` 
+                    : `😱 Oh nein! Du schuldest dem Finanzamt ${Math.abs(amount)} €!`;
+
+                document.getElementById("result").innerText = message;
+
+                // Sound abspielen
+                if (amount >= 0) {
+                    winSound.play();
+                } else {
+                    loseSound.play();
+                }
+
+                // Fake-Auszahlungsliste aktualisieren
+                let newPayout = document.createElement("li");
+                newPayout.innerHTML = amount >= 0
+                    ? `🎉 Jemand hat gerade ${amount} € gewonnen!`
+                    : `😱 Jemand muss ${Math.abs(amount)} € nachzahlen!`;
+                
+                let payoutList = document.getElementById("fake-payouts");
+                payoutList.insertBefore(newPayout, payoutList.firstChild);
+
+                // Maximal 5 Einträge anzeigen
+                if (payoutList.children.length > 5) {
+                    payoutList.removeChild(payoutList.lastChild);
+                }
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
